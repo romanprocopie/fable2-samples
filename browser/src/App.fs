@@ -31,14 +31,34 @@ myCanvas.height <- gridWidth
 printfn "%i" steps
 
 // prepare our canvas operations
-[0..steps] // this is a list
-  |> Seq.iter( fun x -> // we iter through the list using an anonymous function
-      let v = float ((x) * squareSize) 
-      ctx.moveTo(v, 0.)
-      ctx.lineTo(v, gridWidth)
-      ctx.moveTo(0., v)
-      ctx.lineTo(gridWidth, v)
-    ) 
+// [0..steps] // this is a list
+//   |> Seq.iter( fun x -> // we iter through the list using an anonymous function
+//       let v = float ((x) * squareSize) 
+//       ctx.moveTo(v, 0.)
+//       ctx.lineTo(v, gridWidth)
+//       ctx.moveTo(0., v)
+//       ctx.lineTo(gridWidth, v)
+//     ) 
+
+ctx.moveTo(w /2., h/2.)
+
+let circlesteps = 10
+let stepsize = 4.
+[0..circlesteps] |>
+  Seq.fold( fun curr step ->
+    
+    let dir = step % 4
+    let currx, curry = curr
+    ctx.lineTo currx, curry |> ignore
+    match dir with 
+    | 0 -> currx + stepsize, curry
+    | 1 -> currx, curry + stepsize
+    | 2 -> currx - stepsize, curry
+    | 3 -> currx, curry - stepsize           
+    | _ -> currx, curry    
+  ) (w/2., h/2.) 
+  |> ignore
+
 ctx.strokeStyle <- !^"#ddd" // color
 
 // draw our grid
