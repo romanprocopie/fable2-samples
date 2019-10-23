@@ -14,8 +14,6 @@ let mutable myCanvas : Browser.Types.HTMLCanvasElement = unbox window.document.g
 let ctx = myCanvas.getContext_2d()
 
 // All these are immutables values
-let w = myCanvas.width
-let h = myCanvas.height
 let steps = 20
 let squareSize = 20
 
@@ -24,8 +22,10 @@ let gridWidth = float (steps * squareSize)
 
 // resize our canvas to the size of our grid
 // the arrow <- indicates we're mutating a value. It's a special operator in F#.
-myCanvas.width <- gridWidth
-myCanvas.height <- gridWidth
+myCanvas.width <- 1000.
+myCanvas.height <- 1000.
+let w = myCanvas.width
+let h = myCanvas.height
 
 // print the grid size to our debugger console
 printfn "%i" steps
@@ -42,24 +42,23 @@ printfn "%i" steps
 
 ctx.moveTo(w /2., h/2.)
 
-let circlesteps = 10
-let stepsize = 4.
+let circlesteps = 40
+let stepsize = 14.
 [0..circlesteps] |>
-  Seq.fold( fun curr step ->
-    
+  Seq.fold( fun curr step ->    
     let dir = step % 4
     let currx, curry = curr
-    ctx.lineTo currx, curry |> ignore
+    ctx.lineTo (currx, curry) |> ignore
     match dir with 
-    | 0 -> currx + stepsize, curry
-    | 1 -> currx, curry + stepsize
-    | 2 -> currx - stepsize, curry
-    | 3 -> currx, curry - stepsize           
-    | _ -> currx, curry    
+    | 0 -> currx + stepsize * float(step), curry
+    | 1 -> currx, curry + stepsize * float(step)
+    | 2 -> currx - stepsize * float(step), curry
+    | 3 -> currx, curry - stepsize * float(step)
+    | _ -> currx, curry
   ) (w/2., h/2.) 
   |> ignore
 
-ctx.strokeStyle <- !^"#ddd" // color
+ctx.strokeStyle <- !^"#777" // color
 
 // draw our grid
 ctx.stroke() 
@@ -69,5 +68,3 @@ ctx.textAlign <- "center"
 ctx.fillText("Fable on Canvas", gridWidth * 0.5, gridWidth * 0.5)
 
 printfn "done!"
-
-
